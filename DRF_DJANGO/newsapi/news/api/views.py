@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from newsapi.news.models import Article
-from newsapi.news.api.serializers import ArticleSerializer
+from news.models import Article
+from news.api.serializers import ArticleSerializer
 
 
 @api_view(['GET', 'POST'])
