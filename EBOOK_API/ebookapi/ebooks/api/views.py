@@ -1,8 +1,11 @@
-from rest_framework import mixins, generics
+from rest_framework import mixins, generics, permissions
 from ebooks.models import Ebook, Review
 from ebooks.api.serializers import ReviewSerializer, EbookSerializer
 from django.shortcuts import get_object_or_404
+from ebooks.api.permissions import IsAdminUserOrReadOnly, IsReviewAuthorOrReadOnly
+from rest_framework.exceptions import ValidationError
 
+#VIEW CREATA A MANO UTILIZANDO LA GENERIC APIVIEW
 class EbookListCreate(mixins.ListModelMixin,
                 mixins.CreateModelMixin,
                 generics.GenericAPIView):
@@ -21,6 +24,8 @@ class EbookListCreateApiview(generics.ListCreateAPIView):
     '''
     queryset = Ebook.objects.all()
     serializer_class = EbookSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
+
 
 class EbookDetailApiview(generics.RetrieveUpdateDestroyAPIView):
     '''
@@ -28,6 +33,7 @@ class EbookDetailApiview(generics.RetrieveUpdateDestroyAPIView):
     '''
     queryset = Ebook.objects.all()
     serializer_class = EbookSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
 
 class ReviewCreateApiview(generics.CreateAPIView):
     '''
@@ -35,12 +41,17 @@ class ReviewCreateApiview(generics.CreateAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     
     def perform_create(self, serializer):
         ebook_pk = self.kwargs.get('ebook_pk')
-        print('EBOOK_PK',ebook_pk)
         ebook = get_object_or_404(Ebook, pk=ebook_pk)
-        serializer.save(ebook=ebook)
+        author_user = self.request.user
+        review_exist = Review.objects.filter(ebook=ebook,author_user=author_user).exists()
+        if review_exist:
+            raise ValidationError('Hai già recensito questo libro')
+        serializer.save(ebook=ebook, author_user=author_user)
 
 class ReviewDetailApiview(generics.RetrieveUpdateDestroyAPIView):
     '''
@@ -48,4 +59,6 @@ class ReviewDetailApiview(generics.RetrieveUpdateDestroyAPIView):
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [IsReviewAuthorOrReadOnly]
+
     
