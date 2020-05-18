@@ -47,3 +47,8 @@ EBOOK_API/ebookapi/ebookapi/__pycache__/settings.cpython-38.pyc
 EBOOK_API/ebookapi/ebookapi/__pycache__/urls.cpython-38.pyc
 EBOOK_API/ebookapi/ebooks/api/__pycache__/views.cpython-38.pyc
 EBOOK_API/ebookapi/ebookapi/__pycache__/settings.cpython-38.pyc
+DRF_DJANGO_AVANZATO/userprofilesapi/userprofiles/__pycache__/urls.cpython-38.pyc
+DRF_DJANGO_AVANZATO/userprofilesapi/clientRest/__pycache__/token.cpython-38.pyc
+DRF_DJANGO_AVANZATO/userprofilesapi/userprofiles/api/__pycache__/permissions.cpython-38.pyc
+DRF_DJANGO_AVANZATO/userprofilesapi/userprofiles/api/__pycache__/serializers.cpython-38.pyc
+DRF_DJANGO_AVANZATO/userprofilesapi/userprofiles/api/__pycache__/views.cpython-38.pyc
