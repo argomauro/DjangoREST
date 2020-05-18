@@ -4,6 +4,7 @@ from ebooks.api.serializers import ReviewSerializer, EbookSerializer
 from django.shortcuts import get_object_or_404
 from ebooks.api.permissions import IsAdminUserOrReadOnly, IsReviewAuthorOrReadOnly
 from rest_framework.exceptions import ValidationError
+from ebooks.api.pagination import EbooksPaginations
 
 #VIEW CREATA A MANO UTILIZANDO LA GENERIC APIVIEW
 class EbookListCreate(mixins.ListModelMixin,
@@ -22,9 +23,10 @@ class EbookListCreateApiview(generics.ListCreateAPIView):
     '''
     APIVIEW LIST CON UTILIZZO DEI GENERICS
     '''
-    queryset = Ebook.objects.all()
+    queryset = Ebook.objects.all().order_by("publication_date")
     serializer_class = EbookSerializer
     permission_classes = [IsAdminUserOrReadOnly]
+    pagination_class = EbooksPaginations
 
 
 class EbookDetailApiview(generics.RetrieveUpdateDestroyAPIView):
