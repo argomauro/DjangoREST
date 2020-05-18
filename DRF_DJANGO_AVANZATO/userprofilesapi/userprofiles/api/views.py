@@ -1,5 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
+from rest_framework.filters import SearchFilter
 #from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import viewsets
 from rest_framework import mixins
@@ -12,11 +13,19 @@ class ProfileViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin,
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnProfileOrReadOnly]
+    filter_backends = [SearchFilter]
+    search_fields = ['city']
     
 class StatusProfileViewSet(viewsets.ModelViewSet):
-    queryset = StatusProfile.objects.all()
     serializer_class = StatusProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerProfileOrReadOnly]
+    
+    def get_queryset(self):
+        queryset = StatusProfile.objects.all()
+        username = self.request.query_params.get('username',None)
+        if username is not None:
+            queryset = queryset.filter(user_profile__user__username=username)
+        return queryset
     
     def perform_create(self, serializer):
         user_profile = self.request.user.profile
